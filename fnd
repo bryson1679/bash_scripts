@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source /Users/bryson/dotfiles/colors.sh
+
+if [ $# -lt 1 ]; then
+  printf " usage: fnd \"${RRED}text${RESET}\" \n"
+#  echo " usage: fnd \"text\" "
+  exit
+fi
+
+find . -iname "*$1*"

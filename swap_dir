@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# this will replace one character for another
+# in all file names in current dir.
+# bes 2-4-2013
+
+source /Users/bryson/dotfiles/colors.sh
+
+IFS=$'\n'
+
+if [ "$#" != "2" ]; then
+   echo ""
+   echo " Must have 2 parameters "
+   printf " Usage: swap <${RYELLOW}Swap this${RESET}> <${RGREEN}For that${RESET}>\n"
+   echo ""
+   exit
+fi
+
+for i in `ls`; do
+    x=`echo $i | sed s/"$1"/"$2"/`
+        if [ -a $x ]; then
+            continue
+        fi
+    printf " Moving ${RYELLOW}${i}${RESET} -> ${RGREEN}${x}${RESET} \n"
+    mv $i $x
+done

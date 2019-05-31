@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# this will use ghost script to split pdf pages into individual pdfs.
+#where $1 is the input filename
+
+_self="${0##*/}"
+
+usage(){
+  echo "$_self <file>"
+  echo "This will split a pdf into idividual pages."
+}
+
+if [ "$#" -ne 1 ]; then
+    usage
+    exit
+fi
+
+ournum=`gs -q -dNODISPLAY -c "("$1") (r) file runpdfbegin pdfpagecount = quit" 2>/dev/null`
+dirname=`echo $1 | sed -e s/\.pdf//g`
+mkdir $dirname
+
+counter=1
+
+echo "Splitting $1 into ${ournum} pages."
+sleep .5
+
+for i in $( seq -w 1 $ournum); do
+    newname=`echo $1 | sed -e s/\.pdf//g`
+    reallynewname=$newname-$i.pdf
+    yes | gs -dBATCH -sOutputFile="$dirname/$reallynewname" -dFirstPage=$counter -dLastPage=$counter -sDEVICE=pdfwrite "$1" >& /dev/null
+    counter=$[counter + 1 ]
+    printf "$( tput el)Created $reallynewname | ${i} of ${ournum}\r"
+done
+
+echo ""
+echo "Finished."
+
